@@ -1,10 +1,23 @@
 package com.volyVary.controller;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.HashMap;
+import com.volyVary.dto.LoginRequest;
+import com.volyVary.model.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.volyVary.repository.UtilisateurRepository;
 
@@ -20,13 +33,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         // 1. Spring Security verifie le nom et le mdp
-        Authentication authentication = authenticationManager.authentticate(
-            new UserNamePasswordAuthenticationToken(loginRequest.getNom(), loginRequest.getMdp()));
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(loginRequest.getNom(), loginRequest.getMdp()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 2. On recupere l'utilisateur validé
-        Utilisateur user = utilisateurRepository.findByNom(loginRequest.getNom()).get()
+        Utilisateur user = utilisateurRepository.findByNom(loginRequest.getNom()).get();
 
         // 3. On renvoie un JSON que le fichier auth.js pourra mettre dans sessionStorage 
 

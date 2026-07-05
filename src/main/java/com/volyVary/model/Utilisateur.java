@@ -28,6 +28,26 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    public String getNom(){
+        return nom;
+    }
+    public void setNom(String nom){
+        this.nom = nom;
+    }
+    public String getMdp(){
+        return mdp;
+    }
+    public void setMdp(String mdp){
+        this.mdp = mdp;
+    }
+    public String getRole(){
+        return role;
+    }
+    public void setRole(String role){
+        this.role = role;
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // TODO Auto-generated method stub
