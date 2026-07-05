@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouvelle transformation - VOLY VARY</title>
+<link rel="stylesheet" href="../../../assets/css/variables.css">
+<link rel="stylesheet" href="../../../assets/css/base.css">
+<link rel="stylesheet" href="../../../assets/css/components.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<template id="tpl-page">
+  <div class="page-heading">
+    <div><h1>Transformation</h1><p>Transformer un ou plusieurs lots de paddy</p></div>
+    <a href="../index.html" class="btn btn-outline btn-sm">Retour a la liste</a>
+  </div>
+
+  <div class="card flow-card">
+    <div class="card-body">
+      <form id="form-transformation">
+        <div class="form-field full"><label>Date et heure</label><input type="datetime-local" name="dateHeure" id="in-date" required></div>
+
+        <div class="form-field full">
+          <label>Lots de paddy disponibles</label>
+          <div id="lots-list" class="lots-list"></div>
+        </div>
+
+        <div class="form-field full"><label>Quantite totale de Paddy (kg)</label><input type="number" name="quantite" id="in-quantite" readonly></div>
+
+        <div class="flow-actions">
+          <button type="submit" class="btn btn-primary">Transformer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script src="../../../assets/js/toast.js"></script>
+<script src="../../../assets/js/modal.js"></script>
+<script src="../../../assets/js/store.js"></script>
+<script>window.APP_DEPTH = 3;</script>
+<script src="../../../assets/js/auth.js"></script>
+<script src="../../../assets/js/sidebar.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

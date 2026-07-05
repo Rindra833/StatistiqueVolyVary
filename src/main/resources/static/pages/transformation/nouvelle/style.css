@@ -1,0 +1,6 @@
+.lots-list { display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--color-gray-200); border-radius: var(--radius-md); padding: var(--space-3); max-height: 220px; overflow-y: auto; }
+.lot-row { display: flex; align-items: center; gap: var(--space-3); padding: 6px 4px; }
+.lot-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--color-blue); }
+.lot-row .lot-ref { font-weight: 600; font-size: var(--fs-sm); width: 80px; }
+.lot-row .lot-qte { font-size: var(--fs-sm); color: var(--color-gray-500); }
+.lots-empty { text-align: center; color: var(--color-gray-400); font-size: var(--fs-sm); padding: var(--space-4); }

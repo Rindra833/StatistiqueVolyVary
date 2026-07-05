@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration - VOLY VARY</title>
+<link rel="stylesheet" href="../../../assets/css/variables.css">
+<link rel="stylesheet" href="../../../assets/css/base.css">
+<link rel="stylesheet" href="../../../assets/css/components.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<template id="tpl-page">
+  <div class="page-heading">
+    <div><h1>Configuration</h1><p>Parametres generaux de l'application</p></div>
+  </div>
+
+  <div class="config-grid">
+    <div class="card">
+      <div class="card-head"><h3>Informations de l'entreprise</h3></div>
+      <div class="card-body">
+        <form id="form-entreprise" class="form-grid">
+          <div class="form-field full"><label>Nom de l'entreprise</label><input name="entreprise" value="VOLY VARY"></div>
+          <div class="form-field"><label>Email de contact</label><input type="email" name="email" value="contact@volyvary.mg"></div>
+          <div class="form-field"><label>Telephone</label><input name="telephone" value="020 22 123 45"></div>
+          <div class="form-field full"><label>Adresse</label><input name="adresse" value="Antananarivo, Madagascar"></div>
+          <div class="form-field full" style="margin-top:8px"><button type="submit" class="btn btn-primary">Enregistrer</button></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Notifications</h3></div>
+      <div class="card-body" id="config-toggles"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Securite</h3></div>
+      <div class="card-body">
+        <form id="form-secu" class="form-grid">
+          <div class="form-field"><label>Duree de session (minutes)</label><input type="number" name="session" value="60"></div>
+          <div class="form-field"><label>Tentatives max avant blocage</label><input type="number" name="tentatives" value="5"></div>
+          <div class="form-field full" style="margin-top:8px"><button type="submit" class="btn btn-primary">Enregistrer</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script src="../../../assets/js/toast.js"></script>
+<script src="../../../assets/js/modal.js"></script>
+<script>window.APP_DEPTH = 3;</script>
+<script src="../../../assets/js/auth.js"></script>
+<script src="../../../assets/js/sidebar.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+/* specifique au module distribution: rien de plus que les composants partages */
+.dist-status-select { padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--color-gray-200); font-size: var(--fs-xs); font-weight: 600; }

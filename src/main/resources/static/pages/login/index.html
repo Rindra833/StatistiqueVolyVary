@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion - VOLY VARY</title>
+<link rel="stylesheet" href="../../assets/css/variables.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-visual">
+    <div class="login-visual-content">
+      <svg viewBox="0 0 32 32" fill="none" width="48" height="48"><rect width="32" height="32" rx="8" fill="white"/><path d="M9 11l7 12 7-12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2>Pilotez toute votre chaine de valeur</h2>
+      <p>Collecte, transformation, distribution et statistiques reunies dans une seule plateforme.</p>
+      <ul class="login-visual-list">
+        <li>Suivi en temps reel des transactions</li>
+        <li>Traçabilite complete de la collecte a la distribution</li>
+        <li>Tableaux de bord et statistiques avancees</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="login-form-side">
+    <div class="login-card">
+      <div class="login-brand">
+        <svg viewBox="0 0 32 32" fill="none" width="36" height="36"><rect width="32" height="32" rx="8" fill="#2563EB"/><path d="M9 11l7 12 7-12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>VOLY VARY</span>
+      </div>
+      <h1>Connexion</h1>
+      <p class="login-sub">Accedez a votre espace de gestion</p>
+
+      <form id="login-form" novalidate>
+        <div class="form-field" id="field-email">
+          <label for="email">Adresse email</label>
+          <input type="email" id="email" name="email" placeholder="nom@volyvary.mg" required>
+          <span class="field-error">Veuillez saisir une adresse email valide</span>
+        </div>
+
+        <div class="form-field" id="field-password">
+          <label for="password">Mot de passe</label>
+          <div class="password-wrap">
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+            <button type="button" class="toggle-pass" id="toggle-pass" aria-label="Afficher le mot de passe">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="field-error">Le mot de passe est requis</span>
+        </div>
+
+        <div class="form-field" id="field-role">
+          <label for="role">Role</label>
+          <select id="role" name="role" required>
+            <option value="" disabled selected>Selectionnez votre role</option>
+            <option>Administrateur</option>
+            <option>Responsable Transaction</option>
+            <option>Responsable Collecte</option>
+            <option>Responsable Transformation</option>
+            <option>Responsable Distribution</option>
+            <option>Responsable Statistiques</option>
+          </select>
+          <span class="field-error">Veuillez selectionner un role</span>
+        </div>
+
+        <div class="login-row">
+          <label class="checkbox-row">
+            <input type="checkbox" id="remember">
+            <span>Se souvenir de moi</span>
+          </label>
+          <a href="#" id="forgot-link" class="forgot-link">Mot de passe oublie ?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary login-submit" id="login-submit">
+          <span>Se connecter</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/js/toast.js"></script>
+<script src="../../assets/js/modal.js"></script>
+<script>window.APP_DEPTH = 2;</script>
+<script src="../../assets/js/auth.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

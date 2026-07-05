@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouvelle collecte - VOLY VARY</title>
+<link rel="stylesheet" href="../../../assets/css/variables.css">
+<link rel="stylesheet" href="../../../assets/css/base.css">
+<link rel="stylesheet" href="../../../assets/css/components.css">
+</head>
+<body>
+
+<template id="tpl-page">
+  <div class="page-heading">
+    <div><h1>Collecte : achat de paddy</h1><p>Enregistrer un nouveau lot achete aupres d'un producteur</p></div>
+    <a href="../index.html" class="btn btn-outline btn-sm">Retour a la liste</a>
+  </div>
+
+  <div class="card flow-card">
+    <div class="card-body">
+      <form id="form-collecte">
+        <div class="form-grid">
+          <div class="form-field full"><label>Date et heure</label><input type="datetime-local" name="dateHeure" id="in-date" required></div>
+          <div class="form-field full"><label>Reference client</label><input name="refClient" placeholder="CL001" required></div>
+        </div>
+
+        <div class="client-box">
+          <div class="form-field"><label>Nom</label><input name="nom" required></div>
+          <div class="form-field"><label>Prenom</label><input name="prenom" required></div>
+          <div class="form-field"><label>Numero telephone</label><input name="telephone" placeholder="032 00 000 00" required></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field"><label>Quantite de Paddy (kg)</label><input type="number" name="quantite" min="1" required></div>
+          <div class="form-field"><label>Taux d'humidite (%)</label><input type="number" name="humidite" min="0" max="100" step="0.1" required></div>
+        </div>
+
+        <div class="flow-actions">
+          <button type="submit" class="btn btn-primary">Faire la collecte</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script src="../../../assets/js/toast.js"></script>
+<script src="../../../assets/js/modal.js"></script>
+<script src="../../../assets/js/store.js"></script>
+<script>window.APP_DEPTH = 3;</script>
+<script src="../../../assets/js/auth.js"></script>
+<script src="../../../assets/js/sidebar.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
