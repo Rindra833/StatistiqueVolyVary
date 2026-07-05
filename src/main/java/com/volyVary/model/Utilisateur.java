@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Utilisateur implements UserDetails {
@@ -21,6 +23,11 @@ public class Utilisateur implements UserDetails {
     private String nom;
     private String mdp;
     private String role;
+
+    @OneToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // TODO Auto-generated method stub
