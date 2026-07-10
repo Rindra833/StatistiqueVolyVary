@@ -1,53 +1,54 @@
 package com.volyVary.controller;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-import java.util.HashMap;
-import com.volyVary.dto.LoginRequest;
-import com.volyVary.model.Utilisateur;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.volyVary.repository.UtilisateurRepository;
+import com.volyVary.dto.LoginRequest;
+import com.volyVary.model.Utilisateur;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        // 1. Spring Security verifie le nom et le mdp
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getNom(), loginRequest.getMdp()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getNom(),
+                    loginRequest.getMdp()
+                )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
 
-        // 2. On recupere l'utilisateur validé
-        Utilisateur user = utilisateurRepository.findByNom(loginRequest.getNom()).get();
-
-        // 3. On renvoie un JSON que le fichier auth.js pourra mettre dans sessionStorage 
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("email", user.getNom()); // Le front utilise la clé 'email'[cite: 3]
-        response.put("role", user.getRole());
-        response.put("name", user.getNom());
-
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of(
+                "email", utilisateur.getNom(),
+                "nom", utilisateur.getNom(),
+                "role", utilisateur.getRole(),
+                "name", utilisateur.getNom()
+            ));
+        } catch (AuthenticationException exception) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "Nom ou mot de passe incorrect"));
+        }
     }
 }

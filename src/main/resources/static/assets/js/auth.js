@@ -42,16 +42,27 @@ function roleHomePath() {
   return appRoot() + 'pages/' + home + '/index.html';
 }
 
-function login(email, password, role) {
-  // simulation locale, a remplacer par appel Spring Boot /api/auth/login
-  const user = { email, role, name: email.split('@')[0] };
+function login(authenticatedUser) {
+  const user = {
+    nom: authenticatedUser.nom || authenticatedUser.name,
+    name: authenticatedUser.name || authenticatedUser.nom,
+    email: authenticatedUser.email || authenticatedUser.nom,
+    role: authenticatedUser.role,
+  };
   sessionStorage.setItem('vv_user', JSON.stringify(user));
   return user;
 }
 
-function logout() {
-  sessionStorage.removeItem('vv_user');
-  window.location.href = appRoot() + 'pages/login/index.html';
+async function logout() {
+  try {
+    await fetch('/logout', {
+      method: 'POST',
+      credentials: 'same-origin',
+    });
+  } finally {
+    sessionStorage.removeItem('vv_user');
+    window.location.href = appRoot() + 'pages/login/index.html';
+  }
 }
 
 function getUser() {

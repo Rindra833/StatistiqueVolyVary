@@ -1,82 +1,119 @@
-const pageBody = renderShell('livreurs');
-if (pageBody) {
-  pageBody.appendChild(document.getElementById('tpl-page').content.cloneNode(true));
+if (initStaticShell('livreurs')) {
+  const API_URL = '/api/livreurs';
+  const formModal = document.getElementById('livreur-form-modal');
+  const deleteModal = document.getElementById('livreur-delete-modal');
+  const form = document.getElementById('livreur-form');
+  let items = [];
+  let editedId = null;
+  let deletedId = null;
 
-  const VEHICULES = ['Moto', 'Camionnette', 'Camion'];
-  const DISPO = ['Disponible', 'Indisponible'];
-
-  let items = [
-    { id: 1, nom: 'Rakoto Jean', telephone: '034 12 345 67', adresse: 'Analakely, Antananarivo', vehicule: 'Camionnette', disponibilite: 'Disponible' },
-    { id: 2, nom: 'Rasoa Marie', telephone: '033 98 765 43', adresse: 'Ankorondrano, Antananarivo', vehicule: 'Moto', disponibilite: 'Disponible' },
-    { id: 3, nom: 'Andry Paul', telephone: '032 44 556 78', adresse: 'Ivato, Antananarivo', vehicule: 'Camion', disponibilite: 'Indisponible' },
-    { id: 4, nom: 'Voahangy Lala', telephone: '034 55 667 89', adresse: 'Itaosy, Antananarivo', vehicule: 'Moto', disponibilite: 'Disponible' },
-    { id: 5, nom: 'Hery Tiana', telephone: '033 11 223 45', adresse: 'Tanjombato, Antananarivo', vehicule: 'Camionnette', disponibilite: 'Indisponible' },
-  ];
-  let nextId = 6;
-
-  function formHtml(row) {
-    const d = row || {};
-    return `
-      <div class="form-grid">
-        <div class="form-field full"><label>Nom complet</label><input name="nom" value="${d.nom || ''}" required></div>
-        <div class="form-field"><label>Telephone</label><input name="telephone" value="${d.telephone || ''}" required></div>
-        <div class="form-field"><label>Vehicule</label><select name="vehicule">${VEHICULES.map(v => `<option ${d.vehicule === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
-        <div class="form-field full"><label>Adresse</label><input name="adresse" value="${d.adresse || ''}" required></div>
-        <div class="form-field"><label>Disponibilite</label><select name="disponibilite">${DISPO.map(v => `<option ${d.disponibilite === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
-      </div>`;
+  function renderBadge(cell, value, className) {
+    const badge = document.createElement('span');
+    badge.className = `badge ${className}`;
+    badge.textContent = value || '';
+    cell.appendChild(badge);
   }
 
-  let table;
-  function refresh() { table.setData(items); }
-
-  table = new DataTable({
-    container: document.getElementById('lv-table'),
-    data: items, pageSize: 6, addLabel: 'Ajouter un livreur',
-    searchKeys: ['nom', 'telephone', 'adresse'],
-    filters: [
-      { key: 'vehicule', label: 'Vehicule', options: VEHICULES.map(v => ({ value: v, label: v })) },
-      { key: 'disponibilite', label: 'Disponibilite', options: DISPO.map(v => ({ value: v, label: v })) },
-    ],
+  const table = new StaticDataTable({
+    rootId: 'livreurs-table',
+    pageSize: 6,
+    actionsTemplateId: 'livreur-actions-template',
     columns: [
-      { key: 'nom', label: 'Nom' },
-      { key: 'telephone', label: 'Telephone' },
-      { key: 'adresse', label: 'Adresse' },
-      { key: 'vehicule', label: 'Vehicule', render: r => `<span class="badge badge-blue">${r.vehicule}</span>` },
-      { key: 'disponibilite', label: 'Statut', render: r => `<span class="badge ${r.disponibilite === 'Disponible' ? 'badge-green' : 'badge-red'}">${r.disponibilite}</span>` },
+      { key: 'nom' },
+      { key: 'telephone' },
+      { key: 'adresse' },
+      { key: 'vehicule', render: (cell, row) => renderBadge(cell, row.vehicule, 'badge-blue') },
+      { key: 'immatriculation' },
+      { key: 'disponibilite', render: (cell, row) => renderBadge(cell, row.disponibilite, row.disponibilite === 'Disponible' ? 'badge-green' : 'badge-red') },
     ],
-    actions: row => `
-      <button class="action-icon" data-edit="${row.id}" aria-label="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg></button>
-      <button class="action-icon danger" data-delete="${row.id}" aria-label="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>`,
-    onAdd: () => openFormModal({
-      title: 'Ajouter un livreur', bodyHtml: formHtml(null), confirmLabel: 'Creer',
-      onConfirm: data => { items.unshift({ id: nextId++, ...data }); refresh(); toast('Livreur ajoute', 'success'); },
-    }),
-    onExportExcel: rows => exportToExcel(rows, [
-      { key: 'nom', label: 'Nom' }, { key: 'telephone', label: 'Telephone' }, { key: 'adresse', label: 'Adresse' },
-      { key: 'vehicule', label: 'Vehicule' }, { key: 'disponibilite', label: 'Disponibilite' },
-    ], 'livreurs'),
-    onExportPdf: rows => exportToPdf(rows, [
-      { key: 'nom', label: 'Nom' }, { key: 'telephone', label: 'Telephone' }, { key: 'adresse', label: 'Adresse' },
-      { key: 'vehicule', label: 'Vehicule' }, { key: 'disponibilite', label: 'Disponibilite' },
-    ], 'Liste des livreurs'),
   });
 
-  document.getElementById('lv-table').addEventListener('click', e => {
-    const editId = e.target.closest('[data-edit]')?.dataset.edit;
-    const delId = e.target.closest('[data-delete]')?.dataset.delete;
-    if (editId) {
-      const row = items.find(i => i.id == editId);
-      openFormModal({
-        title: `Modifier ${row.nom}`, bodyHtml: formHtml(row), confirmLabel: 'Enregistrer',
-        onConfirm: data => { Object.assign(row, data); refresh(); toast('Livreur mis a jour', 'success'); },
+  function openForm(livreur = null) {
+    editedId = livreur?.id || null;
+    document.getElementById('livreur-form-title').textContent = livreur
+      ? `Modifier ${livreur.nom}`
+      : 'Ajouter un livreur';
+    form.reset();
+    form.elements.nom.value = livreur?.nom || '';
+    form.elements.telephone.value = livreur?.telephone || '';
+    form.elements.vehicule.value = livreur?.vehicule || 'Moto';
+    form.elements.immatriculation.value = livreur?.immatriculation || '';
+    form.elements.disponibilite.value = livreur?.disponibilite || 'Disponible';
+    form.elements.adresse.value = livreur?.adresse || '';
+    openStaticModal('livreur-form-modal');
+  }
+
+  document.getElementById('add-livreur').addEventListener('click', () => openForm());
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const saveButton = document.getElementById('save-livreur');
+    saveButton.disabled = true;
+    try {
+      const payload = Object.fromEntries(new FormData(form).entries());
+      const saved = await apiRequest(editedId ? `${API_URL}/${editedId}` : API_URL, {
+        method: editedId ? 'PUT' : 'POST',
+        body: payload,
       });
-    }
-    if (delId) {
-      const row = items.find(i => i.id == delId);
-      openConfirmModal({
-        title: 'Supprimer ce livreur ?', message: `${row.nom} sera definitivement supprime.`,
-        onConfirm: () => { items = items.filter(i => i.id != delId); refresh(); toast('Livreur supprime', 'success'); },
-      });
+      items = editedId
+        ? items.map(item => item.id === editedId ? saved : item)
+        : [saved, ...items];
+      table.setData(items);
+      closeStaticModal(formModal);
+      toast(editedId ? 'Livreur mis à jour' : 'Livreur ajouté', 'success');
+    } catch (error) {
+      handleProtectedApiError(error);
+    } finally {
+      saveButton.disabled = false;
     }
   });
+
+  document.querySelector('#livreurs-table tbody').addEventListener('click', event => {
+    const editId = Number(event.target.closest('[data-edit]')?.dataset.edit);
+    const deleteId = Number(event.target.closest('[data-delete]')?.dataset.delete);
+    if (editId) openForm(items.find(item => item.id === editId));
+    if (deleteId) {
+      deletedId = deleteId;
+      const livreur = items.find(item => item.id === deleteId);
+      document.getElementById('livreur-delete-message').textContent = `${livreur.nom} sera définitivement supprimé.`;
+      openStaticModal('livreur-delete-modal');
+    }
+  });
+
+  document.getElementById('confirm-delete-livreur').addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    try {
+      await apiRequest(`${API_URL}/${deletedId}`, { method: 'DELETE' });
+      items = items.filter(item => item.id !== deletedId);
+      table.setData(items);
+      closeStaticModal(deleteModal);
+      toast('Livreur supprimé', 'success');
+    } catch (error) {
+      handleProtectedApiError(error);
+    } finally {
+      event.currentTarget.disabled = false;
+    }
+  });
+
+  document.getElementById('export-livreurs-excel').addEventListener('click', () => {
+    exportToExcel(table.filteredSorted(), [
+      { key: 'nom', label: 'Nom' }, { key: 'telephone', label: 'Téléphone' },
+      { key: 'adresse', label: 'Adresse' }, { key: 'vehicule', label: 'Véhicule' },
+      { key: 'immatriculation', label: 'Immatriculation' }, { key: 'disponibilite', label: 'Disponibilité' },
+    ], 'livreurs');
+  });
+  document.getElementById('export-livreurs-pdf').addEventListener('click', () => {
+    exportToPdf(table.filteredSorted(), [
+      { key: 'nom', label: 'Nom' }, { key: 'telephone', label: 'Téléphone' },
+      { key: 'adresse', label: 'Adresse' }, { key: 'vehicule', label: 'Véhicule' },
+      { key: 'immatriculation', label: 'Immatriculation' }, { key: 'disponibilite', label: 'Disponibilité' },
+    ], 'Liste des livreurs');
+  });
+
+  apiRequest(API_URL)
+    .then(data => {
+      items = data;
+      table.setData(items);
+    })
+    .catch(handleProtectedApiError);
 }

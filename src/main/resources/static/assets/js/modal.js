@@ -41,12 +41,19 @@ function openFormModal(options) {
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay); });
 
   const form = overlay.querySelector('.modal-form');
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
+    const confirmButton = form.querySelector('[type="submit"]');
+    confirmButton.disabled = true;
+
     if (options.onConfirm) {
-      const ok = options.onConfirm(data, form);
-      if (ok !== false) closeModal(overlay);
+      try {
+        const ok = await options.onConfirm(data, form);
+        if (ok !== false) closeModal(overlay);
+      } finally {
+        confirmButton.disabled = false;
+      }
     } else {
       closeModal(overlay);
     }
@@ -76,9 +83,16 @@ function openConfirmModal(options) {
 
   overlay.querySelector('[data-cancel]').addEventListener('click', () => closeModal(overlay));
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay); });
-  overlay.querySelector('[data-confirm]').addEventListener('click', () => {
-    if (options.onConfirm) options.onConfirm();
-    closeModal(overlay);
+  overlay.querySelector('[data-confirm]').addEventListener('click', async event => {
+    const confirmButton = event.currentTarget;
+    confirmButton.disabled = true;
+
+    try {
+      const ok = options.onConfirm ? await options.onConfirm() : true;
+      if (ok !== false) closeModal(overlay);
+    } finally {
+      confirmButton.disabled = false;
+    }
   });
   return overlay;
 }

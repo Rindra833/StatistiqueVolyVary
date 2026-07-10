@@ -1,5 +1,14 @@
 // composant table generique: recherche multicritere, tri, filtres, pagination
 // usage: new DataTable({ container, columns, data, pageSize, filters, actions, onExportPdf, onExportExcel, onImportExcel, onAdd })
+function escapeDataTableHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 class DataTable {
   constructor(opts) {
     this.container = opts.container;
@@ -77,7 +86,7 @@ class DataTable {
           <tbody>
             ${pageRows.length === 0 ? `<tr><td colspan="${this.columns.length + (this.actions ? 1 : 0)}" class="dt-empty">Aucun resultat trouve</td></tr>` :
               pageRows.map(row => `<tr>
-                ${this.columns.map(c => `<td>${c.render ? c.render(row) : (row[c.key] ?? '')}</td>`).join('')}
+                ${this.columns.map(c => `<td>${c.render ? c.render(row) : escapeDataTableHtml(row[c.key])}</td>`).join('')}
                 ${this.actions ? `<td><div class="row-actions">${this.actions(row)}</div></td>` : ''}
               </tr>`).join('')}
           </tbody>

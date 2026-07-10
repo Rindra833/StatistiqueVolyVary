@@ -1,9 +1,10 @@
-// si deja connecte, on redirige direct vers sa page d'accueil
+// Si une session frontend existe déjà, rediriger vers la page autorisée.
 if (getUser()) window.location.href = roleHomePath();
 
 const form = document.getElementById('login-form');
 const toggleBtn = document.getElementById('toggle-pass');
 const passInput = document.getElementById('password');
+initStaticModals();
 
 toggleBtn.addEventListener('click', () => {
   passInput.type = passInput.type === 'password' ? 'text' : 'password';
@@ -13,47 +14,44 @@ function setInvalid(fieldId, invalid) {
   document.getElementById(fieldId).classList.toggle('invalid', invalid);
 }
 
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  const email = document.getElementById('email').value.trim();
-  const password = passInput.value;
-  const role = document.getElementById('role').value;
+form.addEventListener('submit', async event => {
+  event.preventDefault();
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  setInvalid('field-email', !emailValid);
-  setInvalid('field-password', password.length === 0);
-  setInvalid('field-role', role === '');
+  const nom = document.getElementById('nom').value.trim();
+  const mdp = passInput.value;
 
-  if (!emailValid || password.length === 0 || role === '') {
+  setInvalid('field-nom', nom.length === 0);
+  setInvalid('field-password', mdp.length === 0);
+
+  if (!nom || !mdp) {
     toast('Veuillez corriger les champs en rouge', 'error');
     return;
   }
 
-  const btn = document.getElementById('login-submit');
-  btn.disabled = true;
-  btn.querySelector('span').textContent = 'Connexion...';
+  const button = document.getElementById('login-submit');
+  const label = button.querySelector('span');
+  button.disabled = true;
+  label.textContent = 'Connexion...';
 
-  // simulation appel reseau, a remplacer par POST /api/auth/login
-  setTimeout(() => {
-    login(email, password, role);
-    toast('Connexion reussie', 'success', 1200);
-    setTimeout(() => { window.location.href = roleHomePath(); }, 400);
-  }, 500);
+  try {
+    const authenticatedUser = await apiRequest('/api/auth/login', {
+      method: 'POST',
+      body: { nom, mdp },
+    });
+
+    login(authenticatedUser);
+    toast('Connexion réussie', 'success', 1200);
+    setTimeout(() => {
+      window.location.href = roleHomePath();
+    }, 400);
+  } catch (error) {
+    toast(error.message || 'Connexion impossible', 'error');
+    button.disabled = false;
+    label.textContent = 'Se connecter';
+  }
 });
 
-document.getElementById('forgot-link').addEventListener('click', e => {
-  e.preventDefault();
-  openFormModal({
-    title: 'Mot de passe oublie',
-    bodyHtml: `
-      <p style="font-size:var(--fs-sm);color:var(--color-gray-500);margin-bottom:16px">
-        Saisissez votre adresse email, un lien de reinitialisation vous sera envoye.
-      </p>
-      <div class="form-field full">
-        <label for="reset-email">Email</label>
-        <input type="email" name="reset-email" id="reset-email" placeholder="nom@volyvary.mg" required>
-      </div>`,
-    confirmLabel: 'Envoyer le lien',
-    onConfirm: () => { toast('Lien de reinitialisation envoye', 'success'); },
-  });
+document.getElementById('forgot-link').addEventListener('click', event => {
+  event.preventDefault();
+  openStaticModal('forgot-password-modal');
 });

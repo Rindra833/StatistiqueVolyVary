@@ -13,7 +13,7 @@ public class LoginRequest {
     public String getMdp(){
         return mdp;
     }
-    public void setMdo(String mdp){
+    public void setMdp(String mdp){
         this.mdp = mdp;
     }
 }

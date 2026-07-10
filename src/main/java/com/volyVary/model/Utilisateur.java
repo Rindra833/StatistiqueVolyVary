@@ -1,9 +1,13 @@
 package com.volyVary.model;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.jspecify.annotations.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,12 +25,22 @@ public class Utilisateur implements UserDetails {
 
     @Column(unique = true)
     private String nom;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String mdp;
     private String role;
 
     @OneToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNom(){
         return nom;
@@ -47,21 +61,35 @@ public class Utilisateur implements UserDetails {
         this.role = role;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+        if (role == null || role.isBlank()) {
+            return List.of();
+        }
+        String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+        return List.of(new SimpleGrantedAuthority(authority));
     }
+
     @Override
-    public @Nullable String getPassword() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+    @JsonIgnore
+    public String getPassword() {
+        return mdp;
     }
+
     @Override
+    @JsonIgnore
     public String getUsername() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
+        return nom;
     }
 
 }
