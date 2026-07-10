@@ -1,0 +1,4 @@
+- Vérification utilité (fonctions)
+- conversion des fichiers .js en .jsp
+- Mettre les affichages dans webapp
+- test
