@@ -12,7 +12,7 @@ public class Fourniture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String nom;
     private String categorie;
@@ -21,11 +21,11 @@ public class Fourniture {
     private LocalDate date;
     private String fournisseur;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

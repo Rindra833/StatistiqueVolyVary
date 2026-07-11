@@ -21,7 +21,7 @@ import jakarta.persistence.OneToOne;
 public class Utilisateur implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(unique = true)
     private String nom;
@@ -34,11 +34,11 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

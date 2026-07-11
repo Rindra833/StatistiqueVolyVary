@@ -32,7 +32,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> obtenir(@PathVariable Long id) {
+    public ResponseEntity<Employee> obtenir(@PathVariable Integer id) {
         return ResponseEntity.of(employeeRepository.findById(id));
     }
 
@@ -45,7 +45,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> modifier(
-        @PathVariable Long id,
+        @PathVariable Integer id,
         @RequestBody Employee employee
     ) {
         if (!employeeRepository.existsById(id)) {
@@ -57,7 +57,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
+    public ResponseEntity<Void> supprimer(@PathVariable Integer id) {
         if (!employeeRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

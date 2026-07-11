@@ -32,7 +32,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> obtenir(@PathVariable Long id) {
+    public ResponseEntity<Client> obtenir(@PathVariable Integer id) {
         return ResponseEntity.of(clientRepository.findById(id));
     }
 
@@ -45,7 +45,7 @@ public class ClientController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Client> modifier(
-        @PathVariable Long id,
+        @PathVariable Integer id,
         @RequestBody Client client
     ) {
         if (!clientRepository.existsById(id)) {
@@ -57,7 +57,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
+    public ResponseEntity<Void> supprimer(@PathVariable Integer id) {
         if (!clientRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

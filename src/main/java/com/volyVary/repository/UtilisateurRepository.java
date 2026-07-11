@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.volyVary.model.Utilisateur;
 
 @Repository
-public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
+public interface UtilisateurRepository extends JpaRepository<Utilisateur, Integer> {
     Optional<Utilisateur> findByNom(String nom);
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.volyVary.model.Livreur;
 
 @Repository
-public interface LivreurRepository extends JpaRepository<Livreur, Long> {
+public interface LivreurRepository extends JpaRepository<Livreur, Integer> {
     // Spring Data JPA genere automatiquement la requete SQL
     List<Livreur> findByNomContainingIgnoreCase(String nom);
 }

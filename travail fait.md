@@ -1,43 +1,174 @@
 # Voly-Vary — Travaux effectués
 
-Dernière mise à jour : 10 juillet 2026
+Dernière mise à jour : 11 juillet 2026
 
-## Vue d'ensemble
+## Vue d’ensemble
 
-| Phase | Domaine | État |
-|---|---|---|
-| Phase A | Configuration PostgreSQL et sécurité Spring | ✅ Terminée |
-| Phase B | API REST et opérations CRUD | ✅ Terminée |
-| Phase C | Connexion du frontend au backend | ✅ Terminée |
-| Refactorisation | Déplacement du HTML généré vers les fichiers `index.html` | ✅ Terminée |
-| Validation | Tests Java, PostgreSQL, sécurité et JavaScript | ✅ Terminée |
+| Chantier | État |
+|---|---|
+| Configuration PostgreSQL et JPA | ✅ Terminé |
+| Authentification Spring Security par formulaire et session | ✅ Terminé |
+| Migration des pages utiles vers JSP/JSTL | ✅ Terminé |
+| CRUD MVC avec formulaires HTML et modèle PRG | ✅ Terminé |
+| Simplification du JavaScript | ✅ Terminé |
+| Tests MVC, sécurité, PostgreSQL et rendu JSP réel | ✅ Terminé |
+| Génération de l’archive WAR | ✅ Terminée |
 
-## Phase A — Sécurité et base de données
+## Périmètre de la migration JSP
 
-- [x] Vérification de la configuration PostgreSQL dans `application.properties`.
-- [x] Configuration de la base `volyvary_db` sur le port `5432`.
-- [x] Activation de `spring.jpa.hibernate.ddl-auto=update`.
-- [x] Configuration du dialecte PostgreSQL demandé.
-- [x] Désactivation de `spring.jpa.open-in-view` pour mieux séparer la couche web de la couche de persistance.
-- [x] Création de `CustomUserDetailsService` pour charger les utilisateurs depuis `UtilisateurRepository`.
-- [x] Ajout du bean `BCryptPasswordEncoder`.
-- [x] Implémentation correcte des méthodes `UserDetails` dans `Utilisateur` :
-  - `getUsername()` ;
-  - `getPassword()` ;
-  - `getAuthorities()`.
-- [x] Correction du setter `setMdp()` dans `LoginRequest`.
-- [x] Nettoyage et sécurisation de `AuthController`.
-- [x] Retour d'une réponse HTTP `401 Unauthorized` lorsque les identifiants sont incorrects.
-- [x] Persistance de l'authentification dans la session Spring Security.
-- [x] Autorisation publique des ressources nécessaires à la page de connexion.
-- [x] Protection des pages métier et des endpoints REST.
-- [x] Invalidation de la session serveur lors de la déconnexion.
-- [x] Suppression de la dépendance Spring Security déclarée deux fois dans `pom.xml`.
-- [x] Ajout d'un mécanisme optionnel d'amorçage du premier administrateur avec des variables d'environnement.
+Conformément aux instructions du chef de projet, seules les pages utiles au travail actuel ont été migrées :
+
+- connexion ;
+- livreurs ;
+- fournitures ;
+- utilisateurs ;
+- page d’accès refusé.
+
+Les autres pages historiques du template n’ont pas été modifiées. Les anciennes URL des quatre pages concernées restent acceptées et redirigent vers les contrôleurs MVC afin de ne pas casser les liens existants.
+
+## Architecture actuelle
+
+L’application utilise désormais Spring Boot MVC avec des JSP protégées dans `WEB-INF`. Le navigateur ne reçoit plus une page vide que JavaScript doit construire. Le contrôleur charge les données, les place dans un `Model`, puis JSP et JSTL produisent directement le HTML sur le serveur.
+
+```text
+Navigateur
+    ↓ requête GET ou formulaire POST
+Contrôleur MVC
+    ↓
+Service métier
+    ↓
+Repository JPA
+    ↓
+PostgreSQL
+
+Contrôleur MVC
+    ↓ Model
+JSP + JSTL
+    ↓ HTML complet
+Navigateur
+```
+
+Organisation principale :
+
+```text
+src/main/java/com/volyVary/
+├── config/          sécurité Spring
+├── controller/      contrôleurs MVC
+├── model/           entités JPA
+├── repository/      accès PostgreSQL
+└── service/         logique métier
+
+src/main/webapp/WEB-INF/jsp/
+├── connexion.jsp
+├── acces-refuse.jsp
+├── fragments/
+├── livreurs/
+├── fournitures/
+└── utilisateurs/
+
+src/main/resources/static/assets/
+├── css/jsp.css
+└── js/jsp-tableau.js
+```
+
+## Configuration JSP et déploiement WAR
+
+- [x] Passage du projet Maven au packaging `war`.
+- [x] Ajout de Tomcat Jasper pour compiler les JSP.
+- [x] Ajout de JSTL Jakarta pour les boucles, conditions et échappements dans les vues.
+- [x] Ajout de Tomcat en dépendance `provided` pour permettre un déploiement externe.
+- [x] Configuration du préfixe `/WEB-INF/jsp/` et du suffixe `.jsp`.
+- [x] Adaptation de `Application` avec `SpringBootServletInitializer`.
+- [x] Vérification de la génération de `target/demo-0.0.1-SNAPSHOT.war`.
+
+Les JSP se trouvent dans `WEB-INF/jsp` : elles ne sont pas accessibles directement par URL et doivent obligatoirement passer par un contrôleur Spring MVC.
+
+## Rendu côté serveur
+
+### Connexion
+
+- [x] Création de `connexion.jsp`.
+- [x] Formulaire HTML classique envoyé vers `POST /connexion`.
+- [x] Champs attendus par Spring Security : `nom` et `mdp`.
+- [x] Affichage côté serveur des messages d’échec et de déconnexion.
+- [x] Suppression de l’ancien appel JavaScript vers `/api/auth/login`.
+
+### Livreurs
+
+- [x] Liste produite par JSTL à partir du `Model`.
+- [x] Recherche et filtres exécutés côté serveur.
+- [x] Formulaire JSP commun à la création et à la modification.
+- [x] Création et modification avec formulaire `POST`.
+- [x] Suppression avec formulaire `POST` protégé par CSRF.
+
+### Fournitures
+
+- [x] Liste produite par JSTL à partir du `Model`.
+- [x] Recherche et filtre de catégorie côté serveur.
+- [x] Formulaire JSP de création et de modification.
+- [x] Création, modification et suppression via formulaires HTML classiques.
+
+### Utilisateurs
+
+- [x] Liste produite par JSTL à partir du `Model`.
+- [x] Recherche et filtre de rôle côté serveur.
+- [x] Formulaire JSP de création et de modification.
+- [x] Association optionnelle avec un employé.
+- [x] Encodage BCrypt du mot de passe à la création.
+- [x] Conservation du mot de passe actuel si le champ reste vide pendant une modification.
+- [x] Suppression via formulaire `POST` protégé par CSRF.
+
+## Modèle POST → redirection → GET
+
+Toutes les écritures des modules migrés suivent le modèle PRG demandé :
+
+1. le navigateur envoie un formulaire `POST` ;
+2. le contrôleur valide et enregistre par l’intermédiaire du service ;
+3. le contrôleur retourne une redirection ;
+4. le navigateur effectue un nouveau `GET` sur la liste ;
+5. un message de succès est affiché avec les attributs flash.
+
+Ce modèle empêche une nouvelle insertion accidentelle lorsque l’utilisateur actualise la page.
+
+## Séparation des responsabilités
+
+- [x] Les contrôleurs gèrent les routes, le `Model`, les formulaires et les redirections.
+- [x] Les services centralisent les recherches, filtres et opérations CRUD.
+- [x] Les repositories restent responsables de l’accès aux données.
+- [x] Les JSP contiennent la structure HTML et les expressions JSTL.
+- [x] Le JavaScript ne porte aucune logique de persistance et ne construit aucune page.
+- [x] Les variables ajoutées dans les services et contrôleurs portent des noms français.
+- [x] Chaque fonction ajoutée contient un commentaire pédagogique détaillant son rôle, ses entrées et son résultat.
+
+## JavaScript conservé
+
+Un seul script propre aux pages JSP a été conservé : `assets/js/jsp-tableau.js`.
+
+Il est limité à deux aides facultatives :
+
+- exporter en CSV le tableau HTML déjà rendu par le serveur ;
+- demander l’impression de la page déjà rendue.
+
+Il ne récupère pas les données, ne génère pas les lignes des tableaux, ne crée pas les formulaires et n’effectue aucune opération CRUD. La confirmation de suppression est une petite interaction attachée au formulaire HTML existant.
+
+Les anciens scripts `api.js`, `static-ui.js`, `static-datatable.js` et les scripts spécifiques de génération des pages migrées ont été retirés.
+
+## Sécurité
+
+- [x] Chargement des comptes par `CustomUserDetailsService` et `UtilisateurRepository`.
+- [x] Mots de passe encodés avec BCrypt.
+- [x] Authentification par formulaire et session Spring Security.
+- [x] Routes publiques limitées à la connexion et aux ressources statiques nécessaires.
+- [x] Routes d’administration réservées au rôle `Administrateur`.
+- [x] Protection CSRF active sur tous les formulaires `POST`.
+- [x] Jeton CSRF inclus dans les formulaires de connexion, d’enregistrement, de suppression et de déconnexion.
+- [x] Déconnexion par `POST /deconnexion` avec invalidation de session.
+- [x] Page JSP dédiée au refus d’accès.
+- [x] Autorisation des dispatchers internes `FORWARD` et `ERROR` nécessaires au rendu JSP.
 
 ### Amorçage du premier administrateur
 
-Aucun mot de passe par défaut n'est stocké dans le dépôt. Avant le premier démarrage, les variables suivantes peuvent être définies :
+Aucun mot de passe par défaut n’est enregistré dans le dépôt. Le premier administrateur peut être créé avec des variables d’environnement :
 
 ```powershell
 $env:VOLYVARY_ADMIN_NOM="admin"
@@ -46,186 +177,97 @@ $env:VOLYVARY_ADMIN_ROLE="Administrateur"
 mvn spring-boot:run
 ```
 
-Le compte est créé uniquement si le nom indiqué n'existe pas déjà.
+Le compte est créé uniquement si son nom n’existe pas déjà.
 
-## Phase B — API REST CRUD
+## Base de données
 
-### Entités normalisées
+- [x] Connexion à PostgreSQL sur la base `volyvary_db`.
+- [x] Gestion du schéma avec `spring.jpa.hibernate.ddl-auto=update`.
+- [x] Repositories disponibles pour `Utilisateur`, `Livreur`, `Fourniture`, `Employee` et `Client`.
+- [x] Uniformisation de tous les identifiants avec le type Java `Integer` dans les entités, repositories, services et contrôleurs.
+- [x] Conservation de la séparation entre les données métier `Employee` et le compte système `Utilisateur`.
+- [x] Conservation de la relation optionnelle entre `Utilisateur` et `Employee`.
+- [x] Désactivation de `spring.jpa.open-in-view` afin de garder la persistance hors de la vue.
 
-- [x] Ajout des getters et setters nécessaires à la sérialisation JSON.
-- [x] Normalisation des noms de propriétés Java : `nom`, `email` et `adresse`.
-- [x] Ajout de la propriété `quantite` dans `Fourniture`.
-- [x] Ajout des propriétés d'identification et de relation manquantes dans `Utilisateur`.
-- [x] Protection du mot de passe contre son exposition dans les réponses JSON.
-- [x] Conservation de la séparation entre `Employee` et `Utilisateur`.
+## Nettoyage effectué
 
-### Repositories créés ou complétés
+- [x] Retrait des anciens contrôleurs REST de connexion, livreurs, fournitures et utilisateurs, devenus inutiles après la migration MVC.
+- [x] Retrait des DTO uniquement utilisés par ces anciens endpoints.
+- [x] Retrait des anciens fichiers HTML et JavaScript des quatre pages migrées.
+- [x] Conservation des modules non concernés par la demande.
+- [x] Conservation temporaire des contrôleurs REST `Client` et `Employee`, car leurs pages n’étaient pas dans le périmètre de cette migration.
+- [x] Vérification qu’aucun fichier ne référence encore les helpers JavaScript supprimés.
 
-- [x] `UtilisateurRepository`
-- [x] `LivreurRepository`
-- [x] `FournitureRepository`
-- [x] `EmployeeRepository`
-- [x] `ClientRepository`
+## Tests et validations
 
-### Contrôleurs REST créés
+- [x] Démarrage du contexte Spring Boot avec PostgreSQL 15.15.
+- [x] Vérification de l’authentification par formulaire et de la session.
+- [x] Vérification de l’accès protégé aux pages d’administration.
+- [x] Vérification du refus d’un formulaire sans jeton CSRF.
+- [x] Vérification du cycle création → redirection → affichage → modification → suppression.
+- [x] Vérification de la déconnexion.
+- [x] Démarrage d’un vrai serveur Tomcat sur un port aléatoire pendant les tests.
+- [x] Compilation et rendu réels des JSP par Jasper.
+- [x] Vérification des listes et formulaires JSP pour livreurs, fournitures et utilisateurs.
+- [x] Vérification syntaxique du JavaScript restant avec `node --check`.
+- [x] Correction du style de connexion en déplaçant sa feuille dans les assets publics autorisés par Spring Security.
+- [x] Encodage UTF-8 forcé pour les réponses HTTP et les fragments JSP afin d’éviter les caractères corrompus.
+- [x] Génération réussie de l’archive WAR.
 
-| Ressource | Endpoint principal | Opérations disponibles |
-|---|---|---|
-| Livreurs | `/api/livreurs` | GET, GET par ID, POST, PUT, DELETE |
-| Fournitures | `/api/fournitures` | GET, GET par ID, POST, PUT, DELETE |
-| Employees | `/api/employees` | GET, GET par ID, POST, PUT, DELETE |
-| Clients | `/api/clients` | GET, GET par ID, POST, PUT, DELETE |
-| Utilisateurs | `/api/utilisateurs` | GET, GET par ID, POST, PUT, DELETE |
-| Authentification | `/api/auth/login` | POST |
-
-### Règles particulières pour les utilisateurs
-
-- [x] Création de `UtilisateurRequest` pour les données entrantes.
-- [x] Création de `UtilisateurResponse` pour les données retournées.
-- [x] Encodage BCrypt obligatoire lors de la création d'un utilisateur.
-- [x] Réencodage du mot de passe uniquement lorsqu'un nouveau mot de passe est fourni pendant une modification.
-- [x] Association optionnelle d'un compte à un `Employee` avec `employeeId`.
-- [x] Aucun mot de passe ni hash BCrypt n'est retourné par l'API.
-
-## Phase C — Intégration frontend/backend
-
-### Module d'accès à l'API
-
-- [x] Création de `assets/js/api.js`.
-- [x] Centralisation des appels `fetch`.
-- [x] Envoi automatique des données au format JSON.
-- [x] Transmission du cookie de session avec `credentials: 'same-origin'`.
-- [x] Lecture centralisée des réponses JSON et des erreurs HTTP.
-- [x] Redirection vers la connexion lorsqu'une session protégée expire.
-
-### Connexion et déconnexion
-
-- [x] Remplacement de la simulation du login par un POST réel vers `/api/auth/login`.
-- [x] Envoi des propriétés `nom` et `mdp` au backend.
-- [x] Stockage de `nom`, `name`, `email` et `role` dans `sessionStorage`.
-- [x] Suppression du choix manuel du rôle sur le formulaire de connexion.
-- [x] Utilisation du rôle fourni et validé par le backend.
-- [x] Déconnexion côté frontend et invalidation de la session Spring via `POST /logout`.
-
-### Tableaux et formulaires connectés
-
-- [x] Chargement des livreurs avec `GET /api/livreurs`.
-- [x] Ajout, modification et suppression des livreurs avec POST, PUT et DELETE.
-- [x] Chargement des fournitures avec `GET /api/fournitures`.
-- [x] Ajout, modification et suppression des fournitures avec POST, PUT et DELETE.
-- [x] Chargement des utilisateurs avec `GET /api/utilisateurs`.
-- [x] Ajout, modification et suppression des utilisateurs avec POST, PUT et DELETE.
-- [x] Conservation des fonctions de recherche, filtre, tri, pagination et export.
-- [x] Gestion visuelle des erreurs réseau et des sessions expirées.
-
-## Refactorisation HTML/JavaScript
-
-### Objectif appliqué
-
-La majorité de la structure visuelle est maintenant écrite directement dans les fichiers HTML. Le JavaScript est limité aux responsabilités dynamiques : collecte des données, appels backend, événements, remplissage des lignes et mise à jour des champs.
-
-### Pages concernées
-
-- [x] `pages/login/index.html`
-- [x] `pages/admin/livreurs/index.html`
-- [x] `pages/admin/fournitures/index.html`
-- [x] `pages/admin/utilisateurs/index.html`
-
-### Éléments déplacés dans les fichiers HTML
-
-- [x] Shell principal de l'application.
-- [x] Barre latérale de navigation.
-- [x] Barre supérieure.
-- [x] Titres et sections des pages.
-- [x] Barres de recherche et filtres.
-- [x] Structures `<table>`, `<thead>` et `<tbody>`.
-- [x] Formulaires d'ajout et de modification.
-- [x] Fenêtres de confirmation de suppression.
-- [x] Fenêtre de confirmation de déconnexion.
-- [x] Fenêtre « mot de passe oublié » du login.
-- [x] Petits templates HTML des boutons d'action des lignes.
-- [x] Harmonisation des icônes SVG des pages Livreurs, Fournitures et Utilisateurs.
-
-### Responsabilités restantes du JavaScript
-
-- Récupérer les données depuis l'API.
-- Créer les lignes correspondant aux données reçues.
-- Gérer la recherche, les filtres, le tri et la pagination.
-- Remplir les formulaires lors d'une modification.
-- Envoyer les requêtes POST, PUT et DELETE.
-- Afficher ou fermer les modales déjà présentes dans le HTML.
-- Mettre à jour les messages et les états des boutons.
-
-Deux helpers ciblés ont été ajoutés :
-
-- `static-ui.js` : interactions du shell et des modales statiques ;
-- `static-datatable.js` : affichage des lignes, filtres, tri et pagination à partir des données.
-
-Les autres pages du template n'ont pas été refactorisées et continuent d'utiliser leurs composants historiques.
-
-## Tests et validations effectués
-
-- [x] Compilation Maven réussie.
-- [x] Connexion réelle à PostgreSQL 15.15.
-- [x] Création et mise à jour des tables par Hibernate.
-- [x] Vérification de la création des tables `client`, `employee`, `fourniture`, `livreur` et `utilisateur`.
-- [x] Vérification de la clé étrangère entre `utilisateur` et `employee`.
-- [x] Vérification du login avec un mot de passe BCrypt.
-- [x] Vérification de la création et de la réutilisation de la session.
-- [x] Vérification du cycle CRUD complet : POST → GET → PUT → DELETE.
-- [x] Vérification de la déconnexion et du refus d'accès après invalidation de la session.
-- [x] Vérification qu'une page publique retourne HTTP 200.
-- [x] Vérification qu'une route protégée retourne HTTP 403 sans session.
-- [x] Vérification que les tableaux et formulaires sont réellement présents dans les fichiers HTML servis.
-- [x] Vérification syntaxique des scripts avec `node --check`.
-- [x] Vérification du diff avec `git diff --check`.
-
-### Résultat actuel des tests
+Résultat final :
 
 ```text
-Tests exécutés : 4
+Tests exécutés : 5
 Échecs : 0
 Erreurs : 0
 Résultat Maven : BUILD SUCCESS
+Archive : target/demo-0.0.1-SNAPSHOT.war
 ```
 
-## Organisation architecturale obtenue
+## Routes MVC utiles
 
-```text
-controller  → gestion HTTP et réponses REST
-dto         → contrats d'entrée et de sortie de l'API
-model       → entités persistées par JPA
-repository  → accès aux données PostgreSQL
-service     → chargement des utilisateurs pour Spring Security
-config      → sécurité et amorçage optionnel du premier administrateur
-static      → HTML, CSS et JavaScript du frontend
-```
-
-## Points à traiter ultérieurement
-
-- [ ] Réactiver la protection CSRF avant une mise en production.
-- [ ] Remplacer les identifiants PostgreSQL locaux par des variables d'environnement en production.
-- [ ] Ajouter un véritable endpoint d'import Excel pour les fournitures.
-- [ ] Ajouter des validations métier plus détaillées sur les DTO.
-- [ ] Ajouter une gestion globale des erreurs de contraintes PostgreSQL, par exemple les noms d'utilisateur dupliqués.
-- [ ] Envisager des migrations versionnées avec Flyway ou Liquibase à la place de `ddl-auto=update` pour la production.
+| Fonction | Méthode et route |
+|---|---|
+| Afficher la connexion | `GET /connexion` |
+| Traiter la connexion | `POST /connexion` |
+| Se déconnecter | `POST /deconnexion` |
+| Lister les livreurs | `GET /admin/livreurs` |
+| Ajouter/modifier un livreur | `POST /admin/livreurs/enregistrer` |
+| Lister les fournitures | `GET /admin/fournitures` |
+| Ajouter/modifier une fourniture | `POST /admin/fournitures/enregistrer` |
+| Lister les utilisateurs | `GET /admin/utilisateurs` |
+| Ajouter/modifier un utilisateur | `POST /admin/utilisateurs/enregistrer` |
 
 ## Commandes utiles
 
-Lancer les tests :
-
-```powershell
-mvn test
-```
-
-Lancer l'application :
+Lancer l’application :
 
 ```powershell
 mvn spring-boot:run
 ```
 
-Vérifier la syntaxe d'un script JavaScript :
+Lancer tous les tests :
 
 ```powershell
-node --check chemin/vers/script.js
+mvn test
 ```
+
+Générer le WAR :
+
+```powershell
+mvn package
+```
+
+Vérifier le petit script restant :
+
+```powershell
+node --check src/main/resources/static/assets/js/jsp-tableau.js
+```
+
+## Améliorations possibles hors périmètre
+
+- [ ] Remplacer les identifiants PostgreSQL locaux par des variables d’environnement pour le déploiement.
+- [ ] Ajouter Bean Validation et afficher les erreurs de champs dans les JSP.
+- [ ] Gérer globalement les conflits de contraintes PostgreSQL, par exemple un nom d’utilisateur dupliqué.
+- [ ] Utiliser Flyway ou Liquibase à la place de `ddl-auto=update` en production.
+- [ ] Migrer les autres pages historiques vers JSP seulement si elles entrent dans un futur périmètre fonctionnel.

@@ -10,7 +10,7 @@ public class Livreur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String nom;
     private String telephone;
@@ -19,11 +19,11 @@ public class Livreur {
     private String immatriculation;
     private String disponibilite;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
