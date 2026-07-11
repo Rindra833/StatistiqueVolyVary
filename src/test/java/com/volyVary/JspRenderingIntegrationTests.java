@@ -24,7 +24,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.volyVary.model.Utilisateur;
 import com.volyVary.repository.UtilisateurRepository;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "app.statistiques.donnees-demonstration=false"
+)
 class JspRenderingIntegrationTests {
 
     private static final Pattern MOTIF_CSRF = Pattern.compile(
@@ -70,6 +73,13 @@ class JspRenderingIntegrationTests {
             );
             assertTrue(feuilleConnexion.body().contains(".login-page"));
 
+            HttpResponse<String> bibliothequeGraphique = envoyerGet(
+                client,
+                "/webjars/chart.js/4.4.1/dist/chart.umd.js"
+            );
+            assertEquals(200, bibliothequeGraphique.statusCode());
+            assertTrue(bibliothequeGraphique.body().contains("Chart"));
+
             String formulaireConnexion = "nom=" + encoder(nom)
                 + "&mdp=" + encoder(motDePasse)
                 + "&_csrf=" + encoder(jetonCsrf);
@@ -94,6 +104,7 @@ class JspRenderingIntegrationTests {
             verifierPage(client, "/admin/fournitures/nouvelle", "Ajouter une fourniture");
             verifierPage(client, "/admin/utilisateurs", "Gestion des comptes");
             verifierPage(client, "/admin/utilisateurs/nouveau", "Créer un compte");
+            verifierPage(client, "/admin/statistiques", "Statistique globale");
         } finally {
             utilisateurRepository.deleteById(utilisateur.getId());
         }

@@ -8,6 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
+/**
+ * Données professionnelles d'un employé. La séparation avec Utilisateur évite de mélanger les
+ * informations RH et les droits d'accès au système.
+ */
 public class Employee {
 
     @Id

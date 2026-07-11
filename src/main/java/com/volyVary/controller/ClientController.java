@@ -18,25 +18,40 @@ import com.volyVary.repository.ClientRepository;
 
 @RestController
 @RequestMapping("/api/clients")
+/**
+ * API REST historique des clients. Elle est conservée pour les modules non encore migrés vers JSP.
+ */
 public class ClientController {
 
     private final ClientRepository clientRepository;
 
+    /**
+     * Injecte l'accès aux données clients utilisé par toutes les opérations CRUD.
+     */
     public ClientController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
     @GetMapping
+    /**
+     * Retourne la liste complète des clients sous forme JSON.
+     */
     public List<Client> lister() {
         return clientRepository.findAll();
     }
 
     @GetMapping("/{id}")
+    /**
+     * Retourne le client demandé ou une réponse HTTP 404 lorsque son identifiant n'existe pas.
+     */
     public ResponseEntity<Client> obtenir(@PathVariable Integer id) {
         return ResponseEntity.of(clientRepository.findById(id));
     }
 
     @PostMapping
+    /**
+     * Force un nouvel identifiant puis persiste le client reçu avec le statut HTTP 201 Created.
+     */
     public ResponseEntity<Client> creer(@RequestBody Client client) {
         client.setId(null);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -44,6 +59,10 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
+    /**
+     * Remplace les données du client existant. L'identifiant de l'URL reste prioritaire sur toute
+     * valeur éventuellement envoyée dans le corps JSON.
+     */
     public ResponseEntity<Client> modifier(
         @PathVariable Integer id,
         @RequestBody Client client
@@ -57,6 +76,9 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
+    /**
+     * Supprime le client s'il existe et retourne 204 No Content ; sinon retourne 404.
+     */
     public ResponseEntity<Void> supprimer(@PathVariable Integer id) {
         if (!clientRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

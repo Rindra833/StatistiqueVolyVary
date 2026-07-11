@@ -8,6 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
+/**
+ * Article agricole disponible en stock. Son prix et sa quantité servent notamment au calcul des
+ * montants dans les statistiques de transactions.
+ */
 public class Fourniture {
 
     @Id

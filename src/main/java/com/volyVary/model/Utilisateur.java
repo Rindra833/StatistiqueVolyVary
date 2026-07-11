@@ -18,6 +18,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
+/**
+ * Compte de connexion de l'application. Il reste distinct de l'entité Employee et implémente
+ * UserDetails afin d'être compris directement par Spring Security.
+ */
 public class Utilisateur implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,6 +76,9 @@ public class Utilisateur implements UserDetails {
 
     @Override
     @JsonIgnore
+    /**
+     * Transforme le rôle métier en autorité Spring Security préfixée par ROLE_.
+     */
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role == null || role.isBlank()) {
             return List.of();
@@ -82,12 +89,18 @@ public class Utilisateur implements UserDetails {
 
     @Override
     @JsonIgnore
+    /**
+     * Retourne le hash BCrypt stocké dans mdp à Spring Security, sans l'exposer dans le JSON.
+     */
     public String getPassword() {
         return mdp;
     }
 
     @Override
     @JsonIgnore
+    /**
+     * Indique à Spring Security que le champ nom constitue l'identifiant de connexion.
+     */
     public String getUsername() {
         return nom;
     }

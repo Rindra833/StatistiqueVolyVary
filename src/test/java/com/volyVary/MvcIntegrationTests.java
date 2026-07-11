@@ -27,7 +27,7 @@ import com.volyVary.model.Utilisateur;
 import com.volyVary.repository.LivreurRepository;
 import com.volyVary.repository.UtilisateurRepository;
 
-@SpringBootTest
+@SpringBootTest(properties = "app.statistiques.donnees-demonstration=false")
 @AutoConfigureMockMvc
 @Transactional
 class MvcIntegrationTests {

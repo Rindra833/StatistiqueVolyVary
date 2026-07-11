@@ -41,6 +41,13 @@
       </svg>
       <span>Utilisateurs</span>
     </a>
+    <a href="${pageContext.request.contextPath}/admin/statistiques"
+       class="sidebar-link ${pageActive eq 'statistiques' ? 'active' : ''}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
+      </svg>
+      <span>Statistiques</span>
+    </a>
   </nav>
 
   <div class="sidebar-footer">

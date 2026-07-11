@@ -18,25 +18,40 @@ import com.volyVary.repository.EmployeeRepository;
 
 @RestController
 @RequestMapping("/api/employees")
+/**
+ * API REST historique des employés. Elle reste disponible pour les modules RH non migrés vers JSP.
+ */
 public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
 
+    /**
+     * Injecte l'accès aux données employés utilisé par toutes les opérations CRUD.
+     */
     public EmployeeController(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
     @GetMapping
+    /**
+     * Retourne tous les employés sous forme JSON.
+     */
     public List<Employee> lister() {
         return employeeRepository.findAll();
     }
 
     @GetMapping("/{id}")
+    /**
+     * Retourne l'employé demandé ou une réponse HTTP 404 s'il n'existe pas.
+     */
     public ResponseEntity<Employee> obtenir(@PathVariable Integer id) {
         return ResponseEntity.of(employeeRepository.findById(id));
     }
 
     @PostMapping
+    /**
+     * Crée un nouvel employé en ignorant tout identifiant fourni dans le corps JSON.
+     */
     public ResponseEntity<Employee> creer(@RequestBody Employee employee) {
         employee.setId(null);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -44,6 +59,9 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
+    /**
+     * Met à jour un employé existant en utilisant l'identifiant provenant de l'URL.
+     */
     public ResponseEntity<Employee> modifier(
         @PathVariable Integer id,
         @RequestBody Employee employee
@@ -57,6 +75,9 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
+    /**
+     * Supprime l'employé existant et retourne 204, ou retourne 404 en cas d'identifiant inconnu.
+     */
     public ResponseEntity<Void> supprimer(@PathVariable Integer id) {
         if (!employeeRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

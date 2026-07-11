@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
+/**
+ * Personne ou organisation cliente pouvant être rattachée aux transactions et distributions.
+ */
 public class Client {
 
     @Id

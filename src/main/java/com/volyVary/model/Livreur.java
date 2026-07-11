@@ -6,6 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
+/**
+ * Données métier d'un livreur : identité, coordonnées, véhicule et disponibilité. Cette entité ne
+ * représente pas un compte de connexion.
+ */
 public class Livreur {
 
     @Id

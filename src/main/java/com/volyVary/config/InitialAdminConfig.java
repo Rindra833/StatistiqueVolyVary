@@ -10,6 +10,10 @@ import com.volyVary.model.Utilisateur;
 import com.volyVary.repository.UtilisateurRepository;
 
 @Component
+/**
+ * Amorçage facultatif du premier administrateur à partir de variables de configuration. Aucun
+ * compte ni mot de passe par défaut n'est codé en dur dans l'application.
+ */
 public class InitialAdminConfig implements ApplicationRunner {
 
     private final UtilisateurRepository utilisateurRepository;
@@ -18,6 +22,10 @@ public class InitialAdminConfig implements ApplicationRunner {
     private final String motDePasse;
     private final String role;
 
+    /**
+     * Charge les dépendances et les trois valeurs de configuration. Une valeur vide désactive
+     * simplement l'amorçage, ce qui permet de conserver la même classe dans tous les environnements.
+     */
     public InitialAdminConfig(
         UtilisateurRepository utilisateurRepository,
         BCryptPasswordEncoder passwordEncoder,
@@ -33,6 +41,10 @@ public class InitialAdminConfig implements ApplicationRunner {
     }
 
     @Override
+    /**
+     * S'exécute une fois après le démarrage. Le compte n'est créé que si les identifiants sont
+     * renseignés et si aucun utilisateur du même nom n'existe déjà.
+     */
     public void run(ApplicationArguments args) {
         if (nom.isBlank() || motDePasse.isBlank() || utilisateurRepository.findByNom(nom).isPresent()) {
             return;

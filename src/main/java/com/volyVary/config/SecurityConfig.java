@@ -29,6 +29,7 @@ public class SecurityConfig {
                     "/connexion",
                     "/pages/login/index.html",
                     "/assets/**",
+                    "/webjars/**",
                     "/favicon.ico",
                     "/error"
                 ).permitAll()
@@ -36,7 +37,8 @@ public class SecurityConfig {
                     "/admin/**",
                     "/pages/admin/livreurs/index.html",
                     "/pages/admin/fournitures/index.html",
-                    "/pages/admin/utilisateurs/index.html"
+                    "/pages/admin/utilisateurs/index.html",
+                    "/pages/statistiques/index.html"
                 ).hasRole("Administrateur")
                 .anyRequest().authenticated()
             )
