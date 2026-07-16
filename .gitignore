@@ -1,8 +1,17 @@
 HELP.md
+
+# Artefacts générés par Maven, quel que soit l'emplacement du projet
 target/
-.mvn/wrapper/maven-wrapper.jar
+**/target/
+*.war
+*.war.original
+
+# Le code source ne doit jamais être exclu si un dossier porte ce nom
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+# Maven Wrapper : le JAR peut être téléchargé automatiquement
+.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
 .apt_generated

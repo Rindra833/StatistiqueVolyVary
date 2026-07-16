@@ -1,0 +1,60 @@
+/* --- Alignement et nettoyage de la barre de filtres --- */
+
+/* Conteneur principal des filtres + bouton Exporter */
+.dt-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dt-toolbar-left {
+  flex: 1;
+}
+
+.dt-toolbar-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Le formulaire de recherche interne */
+.filter-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center; /* Aligne parfaitement les éléments au centre verticalement */
+}
+
+/* Force tous les éléments (inputs, select, boutons) à avoir exactement la même hauteur */
+.filter-form .dt-search input,
+.filter-form .dt-filter select,
+.filter-form input[type="date"],
+.filter-form .btn,
+.dt-toolbar-right .btn {
+  height: 38px;
+  box-sizing: border-box;
+}
+
+/* Style des champs dates et du select pour correspondre aux inputs de recherche */
+.filter-form input[type="date"],
+.filter-form .dt-filter select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  background-color: white;
+  color: inherit;
+  font-family: inherit;
+}
+
+/* Ajustement pour le bouton reset outline */
+.filter-form .btn-outline {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Marge pour aérer le haut du tableau */
+.table-wrap {
+  margin-top: 16px;
+}

@@ -1,0 +1,10 @@
+@media print {
+    @page { margin: 0; }
+    .no-print { display: none !important; }
+    body * { visibility: hidden; }
+    .recap-card, .recap-card * { visibility: visible; }
+    .recap-card {
+        position: absolute; left: 0; top: 0; width: 100%;
+        margin: 2cm; box-shadow: none; border: 1px solid #ddd;
+    }
+}

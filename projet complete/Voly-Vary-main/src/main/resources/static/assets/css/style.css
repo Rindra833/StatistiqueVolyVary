@@ -1,0 +1,146 @@
+/* module transformation: styles herites des composants partages */
+
+                .filter-panel {
+                  padding: var(--space-5);
+                }
+
+                .filter-panel-head {
+                  display: flex;
+                  align-items: flex-start;
+                  justify-content: space-between;
+                  gap: var(--space-4);
+                  margin-bottom: var(--space-4);
+                  flex-wrap: wrap;
+                }
+
+                .filter-panel-head h2 {
+                  font-size: var(--fs-lg);
+                  color: var(--color-gray-900);
+                  margin-bottom: 4px;
+                }
+
+                .filter-panel-head p {
+                  color: var(--color-gray-500);
+                  font-size: var(--fs-sm);
+                }
+
+                .filter-bar {
+                  display: grid;
+                  grid-template-columns: repeat(2, minmax(190px, 1fr)) auto;
+                  gap: var(--space-4);
+                  align-items: end;
+                }
+
+                .filter-actions {
+                  display: flex;
+                  align-items: center;
+                  gap: var(--space-2);
+                  flex-wrap: wrap;
+                }
+
+                .filter-chip {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  padding: 8px 12px;
+                  border-radius: 999px;
+                  background: var(--color-blue-light);
+                  color: var(--color-blue);
+                  font-size: var(--fs-xs);
+                  font-weight: 700;
+                }
+
+                .filter-chip.off {
+                  background: var(--color-gray-100);
+                  color: var(--color-gray-500);
+                }
+
+                .filter-input {
+                  position: relative;
+                }
+
+                .filter-input input {
+                  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+                }
+
+                .table-meta {
+                  display: flex;
+                  align-items: center;
+                  gap: var(--space-3);
+                  flex-wrap: wrap;
+                }
+
+                .table-search-hint {
+                  font-size: var(--fs-xs);
+                  color: var(--color-gray-500);
+                }
+
+                .table-result-badge {
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  min-width: 40px;
+                  padding: 7px 12px;
+                  border-radius: 999px;
+                  background: var(--color-gray-100);
+                  color: var(--color-gray-700);
+                  font-size: var(--fs-xs);
+                  font-weight: 700;
+                }
+
+                .dt-search.active {
+                  background: var(--color-white);
+                  box-shadow: 0 0 0 3px var(--color-blue-light);
+                }
+
+                .sort-link {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  color: inherit;
+                  font: inherit;
+                  text-transform: inherit;
+                  letter-spacing: inherit;
+                  background: none;
+                  border: none;
+                  padding: 0;
+                  cursor: pointer;
+                }
+
+                .sort-link:hover {
+                  color: var(--color-blue);
+                }
+
+                .sort-link:focus-visible {
+                  outline: 2px solid var(--color-blue);
+                  outline-offset: 2px;
+                  border-radius: 4px;
+                }
+
+                .sort-arrow {
+                  display: inline-block;
+                  min-width: 10px;
+                  opacity: 0.35;
+                  font-size: 10px;
+                  transition: opacity var(--transition), color var(--transition);
+                }
+
+                th.sorted .sort-arrow {
+                  opacity: 1;
+                  color: var(--color-blue);
+                }
+
+                @media (max-width: 900px) {
+                  .filter-bar {
+                    grid-template-columns: 1fr;
+                  }
+
+                  .filter-actions {
+                    width: 100%;
+                  }
+
+                  .filter-actions .btn {
+                    flex: 1;
+                    justify-content: center;
+                  }
+                }
