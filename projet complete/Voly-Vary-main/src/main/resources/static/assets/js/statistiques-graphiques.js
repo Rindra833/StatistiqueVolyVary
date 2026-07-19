@@ -1,14 +1,7 @@
-/*
- * Modifier uniquement cette valeur pendant une démonstration :
- * 'bar', 'pie' et 'doughnut' fonctionnent avec les mêmes données.
- */
+
 const TYPE_GRAPHIQUE_TRANSACTIONS = 'bar';
 
-/**
- * Lit les données déjà rendues par JSP dans le tableau HTML puis confie uniquement leur
- * représentation graphique à Chart.js. Cette fonction ne crée ni contenu métier ni formulaire :
- * le tableau reste la source visible et accessible même si JavaScript est désactivé.
- */
+
 function afficherGraphiqueTransactions() {
   const canvas = document.getElementById('graphique-transactions');
   const lignes = document.querySelectorAll(

@@ -1,7 +1,4 @@
-/**
- * Recherche une référence existante sans créer de HTML. Si elle n'existe pas, les champs restent
- * modifiables : le module appelant créera le client lors de la validation de son formulaire.
- */
+
 function rechercherClient() {
     const reference = document.getElementById('reference').value.trim();
 

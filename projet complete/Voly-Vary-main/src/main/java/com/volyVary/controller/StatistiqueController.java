@@ -19,8 +19,7 @@ public class StatistiqueController {
     private final StatistiqueService statistiqueService;
 
     /**
-     * Reçoit le service de calcul. Le contrôleur ne connaît ni SQL ni formule métier : il prépare
-     * seulement les paramètres HTTP et le Model de la JSP.
+     * Reçoit le service de calcul. Les paramètres HTTP et le Model de la JSP.
      */
     public StatistiqueController(StatistiqueService statistiqueService) {
         this.statistiqueService = statistiqueService;
